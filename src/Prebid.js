@@ -1,4 +1,4 @@
-import AdUnit from './AdUnit';
+import AdUnit from './adunit/index';
 
 export default class Prebid {
   adUnits: AdUnit[];
