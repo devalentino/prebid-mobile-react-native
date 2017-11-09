@@ -9,5 +9,10 @@
   ],
   "env": {
     "jest": true
+  },
+  "rules": {
+    "no-underscore-dangle": [
+      "error", { "allowAfterThis": true }
+    ]
   }
 }

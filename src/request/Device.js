@@ -53,9 +53,9 @@ export default class Device {
     return this;
   }
 
-  geo(geo: Geo): Device {
-    this.d.geo = geo;
-    return this;
+  geo(): Geo {
+    this.d.geo = new Geo();
+    return this.d.geo;
   }
 
   devtime(devtime: number): Device {
@@ -64,7 +64,7 @@ export default class Device {
   }
 
   lmt(lmt: number): Device {
-    if (lmt !== 0 || lmt !== 1) {
+    if (lmt !== 0 && lmt !== 1) {
       throw new RangeError('0 or 1 values acceptable');
     }
 

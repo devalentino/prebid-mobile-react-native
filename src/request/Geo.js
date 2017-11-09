@@ -5,22 +5,22 @@ export default class Geo {
     this.g = {};
   }
 
-  lat(lat: number) {
+  lat(lat: number): Geo {
     this.g.lat = lat;
     return this;
   }
 
-  lon(lon: number) {
+  lon(lon: number): Geo {
     this.g.lon = lon;
     return this;
   }
 
-  lastfix(lastfix: number) {
+  lastfix(lastfix: number): Geo {
     this.g.lastfix = lastfix;
     return this;
   }
 
-  accuracy(accuracy: number) {
+  accuracy(accuracy: number): Geo {
     this.g.accuracy = accuracy;
     return this;
   }
