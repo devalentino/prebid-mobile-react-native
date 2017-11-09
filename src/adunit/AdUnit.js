@@ -11,15 +11,21 @@ export default class AdUnit {
   code: String;
   configId: String;
   sizes: Set<AdSize>;
+  callbacks: Array<(AdUnit) => mixed>;
 
   constructor(code: String, configId: String, auctionId: String) {
     this.code = code;
     this.configId = configId;
     this.auctionId = auctionId;
     this.sizes = new Set();
+    this.callbacks = [];
   }
 
   addSize(width: number, height: number) {
     this.sizes.add(new AdSize(width, height));
+  }
+
+  addResponceCallback(callback: (AdUnit) => mixed) {
+    this.callbacks.push(callback);
   }
 }
