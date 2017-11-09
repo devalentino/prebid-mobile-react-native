@@ -1,3 +1,4 @@
+import AdUnit from '../adunit';
 import App from './App';
 import Device from './Device';
 import User from './User';
@@ -7,9 +8,12 @@ export default class Request {
   r: Object;
 
   constructor() {
+    const initAdUnits: AdUnit[] = [];
+
     this.r = {
       cache_markup: 1,
       sort_bids: 1,
+      adUnits: initAdUnits,
     };
   }
 
@@ -20,6 +24,11 @@ export default class Request {
 
   tid(tid: String): Request {
     this.r.tid = tid;
+    return this;
+  }
+
+  adUnit(adUnit: AdUnit) {
+    this.r.adUnits.push(adUnit);
     return this;
   }
 
