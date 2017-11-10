@@ -32,8 +32,10 @@ export default class Request {
     return this;
   }
 
-  device(): Device {
-    if (!Object.prototype.hasOwnProperty.call(this.r, 'device')) {
+  device(device?: Device): Device {
+    if (typeof device !== 'undefined') {
+      this.r.device = device;
+    } else if (!Object.prototype.hasOwnProperty.call(this.r, 'device')) {
       this.r.device = new Device();
     }
     return this.r.device;
@@ -46,8 +48,10 @@ export default class Request {
     return this.r.app;
   }
 
-  user(): User {
-    if (!Object.prototype.hasOwnProperty.call(this.r, 'user')) {
+  user(user: User): User {
+    if (typeof user !== 'undefined') {
+      this.r.user = user;
+    } else if (!Object.prototype.hasOwnProperty.call(this.r, 'user')) {
       this.r.user = new User();
     }
     return this.r.user;

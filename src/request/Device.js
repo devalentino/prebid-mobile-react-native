@@ -53,8 +53,13 @@ export default class Device {
     return this;
   }
 
-  geo(): Geo {
-    this.d.geo = new Geo();
+  geo(geo: Geo): Geo {
+    if (typeof geo !== 'undefined') {
+      this.d.geo = geo;
+    } else if (!Object.prototype.hasOwnProperty.call(this.d, 'geo')) {
+      this.d.geo = new Geo();
+    }
+
     return this.d.geo;
   }
 
