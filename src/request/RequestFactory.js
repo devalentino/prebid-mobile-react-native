@@ -21,10 +21,10 @@ export default class RequestFactory {
   }
 
   addCustomHandler(
-    provider: String,
+    adapterType: String,
     handler: (request: Request, geo: Geo) => mixed,
   ) {
-    this.strategies[provider] = handler;
+    this.strategies[adapterType] = handler;
   }
 
   baseRequest(): Request {
@@ -39,9 +39,9 @@ export default class RequestFactory {
     return req;
   }
 
-  request(strategy, geo?: Geo): Request {
+  request(adapterType: String, geo?: Geo): Request {
     const req = this.baseRequest();
-    const handler = this.strategies[strategy];
+    const handler = this.strategies[adapterType];
     if (typeof handler !== 'undefined') {
       return handler.call(this, req, geo);
     }

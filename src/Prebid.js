@@ -1,7 +1,6 @@
 import AdUnit from './adunit';
 import Adapter from './adapter';
 import BidHandler from './BidHandler';
-import Request, { Geo } from './request';
 
 let instance = null;
 
@@ -34,6 +33,8 @@ export default class Prebid {
   }
 
   start() {
+    this.bidHandler.requestAds();
+
     this.requestAdsInterval = setInterval(
       this.bidHandler.requestAds,
       this.settings.period,
@@ -45,11 +46,8 @@ export default class Prebid {
     this.bidHandler.active = false;
   }
 
-  registerAdapter(
-    adapter: Adapter,
-    factory?: (req: Request, geo?: Geo) => mixed,
-  ) {
+  registerAdapter(adapter: Adapter): Prebid {
     this.bidHandler.addAdapter(adapter);
-    this.bidHandler.addRequestFactory(adapter.type, factory);
+    return this;
   }
 }

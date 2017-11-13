@@ -24,17 +24,12 @@ export default class BidHandler {
       throw new Error('Bid handler is not active');
     }
 
-    // TODO: run through all the ad units and request bids
+    this.adapters.forEach((adapter) => {
+      adapter.requestBid(this.adUnits);
+    });
   }
 
   addAdapter(adapter: Adapter) {
     this.adapters.add(adapter);
-  }
-
-  addRequestFactory(
-    type: String,
-    factory: (req: Request, geo?: Geo) => mixed,
-  ) {
-    this.factory.addCustomHandler(type, factory);
   }
 }

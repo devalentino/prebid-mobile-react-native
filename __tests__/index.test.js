@@ -1,5 +1,7 @@
+import Prebid from '../src/Prebid';
+import { PrebidServerAdapter } from '../src/adapter';
 import AdUnit, { BannerAdUnit, InterstitialAdUnit } from '../src/adunit';
-import Request from '../src/request';
+import Request, { Geo } from '../src/request';
 
 
 test('test Prebid', () => {
@@ -20,6 +22,18 @@ test('test Prebid', () => {
     adUnit2,
     adUnit3,
   ];
+
+  const factory = (req: Request, geo?: Geo) => {
+    req.device().geo(geo);
+  };
+
+  const adapter = new PrebidServerAdapter(factory);
+  const prebid = new Prebid(adUnits, 'myaccountid')
+    .registerAdapter(adapter)
+    .period(5)
+    .start();
+
+  console.log(prebid);
 });
 
 test('test request', () => {
