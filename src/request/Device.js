@@ -39,11 +39,21 @@ export default class Device {
   }
 
   mccmnc(mccmnc: String): Device {
+    const val = mccmnc.trim();
+    if (val.length === 0) {
+      return this;
+    }
+
     this.d.mccmnc = mccmnc;
     return this;
   }
 
   carrier(carrier: String): Device {
+    const val = carrier.trim();
+    if (val.length === 0) {
+      return this;
+    }
+
     this.d.carrier = carrier;
     return this;
   }

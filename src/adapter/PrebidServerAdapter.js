@@ -1,11 +1,21 @@
+import Request from '../request';
 import Adapter from './Adapter';
 import AdUnit from '../adunit';
 
 export default class PrebidServerAdapter extends Adapter {
-  type: String = 'PREBID_SERVER_ADAPTER';
+  constructor(factory?: (req: Request) => mixed) {
+    super('PREBID_SERVER_ADAPTER', factory);
+  }
 
-  requestBid(adUnits: AdUnit[]) {
-    const req = this.requestFactory.request(this.type);
-    adUnits.map(adUnit => req.adUnit(adUnit));
+  request(adUnits: AdUnit[]) {
+    const context = this;
+    this.requestFactory.request(this.type)
+      .then((req) => {
+        context.send(req);
+      });
+  }
+
+  send(req) {
+    console.log(req);
   }
 }

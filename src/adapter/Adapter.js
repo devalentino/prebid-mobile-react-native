@@ -1,12 +1,13 @@
 import AdUnit from '../adunit';
-import Request, { Geo } from '../request';
+import Request from '../request';
 import RequestFactory from '../request/RequestFactory';
 
 export default class Adapter {
   type: String;
   requestFactory: RequestFactory;
 
-  constructor(factory?: (req: Request, geo?: Geo) => mixed) {
+  constructor(type: String, factory?: (req: Request) => mixed) {
+    this.type = type;
     this.requestFactory = new RequestFactory();
 
     if (typeof factory !== 'undefined') {
@@ -14,7 +15,7 @@ export default class Adapter {
     }
   }
 
-  requestBid(adUnits: AdUnit[]) {
+  request(adUnits: AdUnit[]) {
     throw new Error('You should extend Adapter ' +
       'and implement this method in subclass!');
   }

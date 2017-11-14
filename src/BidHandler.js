@@ -1,6 +1,6 @@
 import AdUnit from './adunit';
 import Adapter from './adapter';
-import Request, { Geo, RequestFactory } from './request';
+import { RequestFactory } from './request';
 
 export default class BidHandler {
   active: boolean;
@@ -25,7 +25,7 @@ export default class BidHandler {
     }
 
     this.adapters.forEach((adapter) => {
-      adapter.requestBid(this.adUnits);
+      adapter.request(this.adUnits);
     });
   }
 

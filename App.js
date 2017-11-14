@@ -9,8 +9,9 @@ import {
   Platform,
   StyleSheet,
   Text,
-  View
+  View,
 } from 'react-native';
+import AdManager from './demo';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
@@ -20,6 +21,12 @@ const instructions = Platform.select({
 });
 
 export default class App extends Component<{}> {
+
+  componentWillMount() {
+    const adManager = new AdManager();
+    adManager.getAds();
+  }
+
   render() {
     return (
       <View style={styles.container}>

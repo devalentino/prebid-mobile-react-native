@@ -3,13 +3,15 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"android-linux": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res && react-native run-android",
+		"run-android": "react-native bundle --platform android --dev true --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res && react-native run-android",
 		"start": "node node_modules/react-native/local-cli/cli.js start",
 		"test": "jest"
 	},
 	"dependencies": {
 		"react": "16.0.0",
 		"react-native": "0.50.2",
+		"react-native-carrier-info": "^1.0.1",
+		"react-native-device-info": "^0.12.1",
 		"uuid": "^3.1.0"
 	},
 	"devDependencies": {

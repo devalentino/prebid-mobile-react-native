@@ -2,22 +2,10 @@ import Geo from './Geo';
 import Request from './Request';
 
 export default class RequestFactory {
-  target: Object;
   strategies: {[String]: (Request) => mixed};
 
   constructor() {
-    this.target = null;
     this.strategies = {};
-  }
-
-  static collectTarget(): Object {
-    const target = {
-      user: null,
-      device: null,
-    };
-
-    // TODO: collect device, user data
-    return target;
   }
 
   addCustomHandler(
@@ -27,29 +15,26 @@ export default class RequestFactory {
     this.strategies[adapterType] = handler;
   }
 
-  baseRequest(): Request {
-    const req: Request = new Request();
-    if (this.target === null) {
-      this.target = this.collectTarget();
-    }
-
-    req.device(this.target.device);
-    req.user(this.target.user);
-
-    return req;
+  static baseRequest(): Request {
+    return new Request();
   }
 
-  request(adapterType: String, geo?: Geo): Request {
-    const req = this.baseRequest();
+  request(adapterType: String): Promise<Request> {
+    const req = RequestFactory.baseRequest();
     const handler = this.strategies[adapterType];
+    let promise: Promise<Request>;
+
     if (typeof handler !== 'undefined') {
-      return handler.call(this, req, geo);
+      promise = new Promise((resolve, reject) => {
+        handler.call(this, req, resolve.bind(req, req));
+        setInterval(reject, 5 * 1000);
+      });
+    } else {
+      promise = new Promise((resolve) => {
+        resolve(req);
+      });
     }
 
-    if (typeof geo !== 'undefined') {
-      req.device().geo(geo);
-    }
-
-    return req;
+    return promise;
   }
 }

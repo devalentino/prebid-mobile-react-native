@@ -36,7 +36,7 @@ export default class Prebid {
     this.bidHandler.requestAds();
 
     this.requestAdsInterval = setInterval(
-      this.bidHandler.requestAds,
+      this.bidHandler.requestAds.bind(this.bidHandler),
       this.settings.period,
     );
   }
