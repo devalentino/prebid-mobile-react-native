@@ -14,5 +14,9 @@
     "no-underscore-dangle": [
       "error", { "allowAfterThis": true }
     ]
+  },
+  "globals": {
+    "navigator": true,
+    "fetch": true
   }
 }

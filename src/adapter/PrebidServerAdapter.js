@@ -16,7 +16,15 @@ export default class PrebidServerAdapter extends Adapter {
       });
   }
 
-  send(req) {
-    console.log(req.serialize());
+  send(req: Request) {
+    fetch('http://prebid.adnxs.com/pbs/v1/auction', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(req.serialize()),
+    })
+      .then(response => console.log(response));
   }
 }

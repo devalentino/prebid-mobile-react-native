@@ -6,6 +6,7 @@ import Prebid from '../src/Prebid';
 import Request, { Geo } from '../src/request';
 import { PrebidServerAdapter } from '../src/adapter';
 import AdUnit, { BannerAdUnit, InterstitialAdUnit } from '../src/adunit';
+import { accountId } from './config';
 
 function getConnectiontype(type) {
   switch (type) {
@@ -72,7 +73,7 @@ export default class AdManager {
 
       req
         .tid(uuid())
-        .accountId('bfa84af2-bd16-4d35-96ad-31c6bb888df0');
+        .accountId(accountId);
 
       Promise.all([
         CarrierInfo.mobileNetworkOperator().then((mccmnc) => {
@@ -101,7 +102,7 @@ export default class AdManager {
     };
 
     const adapter = new PrebidServerAdapter(factory);
-    this.prebid = new Prebid(adUnits, 'myaccountid')
+    this.prebid = new Prebid(adUnits, accountId)
       .registerAdapter(adapter)
       .period(5 * 1000)
       .start();

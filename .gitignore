@@ -53,3 +53,4 @@ buck-out/
 */fastlane/screenshots
 
 android/app/src/main/assets
+demo/config.js

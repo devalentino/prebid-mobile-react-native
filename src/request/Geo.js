@@ -21,7 +21,7 @@ export default class Geo {
   }
 
   accuracy(accuracy: number): Geo {
-    this.g.accuracy = accuracy;
+    this.g.accuracy = Math.round(accuracy);
     return this;
   }
 
