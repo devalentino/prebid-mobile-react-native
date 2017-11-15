@@ -2,11 +2,7 @@ export default class User {
   u: Object;
 
   constructor() {
-    this.u = {
-      cache_markup: 1,
-      sort_bids: 1,
-      max_key_length: 20,
-    };
+    this.u = {};
   }
 
   age(age: number): User {
@@ -26,5 +22,9 @@ export default class User {
   language(language: String): User {
     this.u.language = language;
     return this;
+  }
+
+  serialize() {
+    return Object.assign({}, this.u);
   }
 }

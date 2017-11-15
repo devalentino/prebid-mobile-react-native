@@ -7,16 +7,14 @@ export const adUnitTypes: Object = {
 
 export default class AdUnit {
   type: String;
-  auctionId: String;
   code: String;
   configId: String;
   sizes: Set<AdSize>;
   callbacks: Array<(AdUnit) => mixed>;
 
-  constructor(code: String, configId: String, auctionId: String) {
+  constructor(code: String, configId: String) {
     this.code = code;
     this.configId = configId;
-    this.auctionId = auctionId;
     this.sizes = new Set();
     this.callbacks = [];
   }
@@ -25,7 +23,24 @@ export default class AdUnit {
     this.sizes.add(new AdSize(width, height));
   }
 
-  addResponceCallback(callback: (AdUnit) => mixed) {
+  addResponseCallback(callback: (AdUnit) => mixed) {
     this.callbacks.push(callback);
+  }
+
+  serialize(width: number, height: number): Object {
+    const unitSizes = [];
+
+    this.sizes.forEach((size) => {
+      unitSizes.push({
+        w: size.width,
+        h: size.height,
+      });
+    });
+
+    return {
+      config_id: this.configId,
+      code: this.code,
+      sizes: unitSizes,
+    };
   }
 }

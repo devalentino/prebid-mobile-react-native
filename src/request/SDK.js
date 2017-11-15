@@ -19,4 +19,8 @@ export default class SDK {
     this.s.platform = platform;
     return this;
   }
+
+  serialize() {
+    return Object.assign({}, this.s);
+  }
 }

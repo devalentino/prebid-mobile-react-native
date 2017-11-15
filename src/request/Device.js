@@ -101,4 +101,21 @@ export default class Device {
     this.d.osv = osv;
     return osv;
   }
+
+  serialize() {
+    return Object.keys(this.d).reduce((res, key) => {
+      if (typeof this.d[key] === 'undefined') {
+        return res;
+      } else if (key === 'geo') {
+        const serializedGeo = this.geo().serialize();
+        if (Object.keys(serializedGeo).length) {
+          res.geo = serializedGeo;
+        }
+      } else {
+        res[key] = this.d[key];
+      }
+
+      return res;
+    }, {});
+  }
 }

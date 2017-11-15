@@ -24,4 +24,8 @@ export default class Geo {
     this.g.accuracy = accuracy;
     return this;
   }
+
+  serialize() {
+    return Object.assign({}, this.g);
+  }
 }

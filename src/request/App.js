@@ -34,4 +34,8 @@ export default class App {
     this.a.privacypolicy = privacypolicy;
     return this;
   }
+
+  serialize() {
+    return Object.assign({}, this.a);
+  }
 }

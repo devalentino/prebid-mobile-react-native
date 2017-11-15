@@ -1,4 +1,4 @@
-import AdUnit from '../adunit';
+import Auction from '../Auction';
 import Request from '../request';
 import RequestFactory from '../request/RequestFactory';
 
@@ -15,7 +15,7 @@ export default class Adapter {
     }
   }
 
-  request(adUnits: AdUnit[]) {
+  request(auction: Auction) {
     throw new Error('You should extend Adapter ' +
       'and implement this method in subclass!');
   }

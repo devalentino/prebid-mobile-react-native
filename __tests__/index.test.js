@@ -8,14 +8,14 @@ test('test Prebid', () => {
   const adUnitCallback = adUnit => console.log(adUnit);
   const adUnit1: AdUnit = new BannerAdUnit('Banner_320x50', 'eebc307d-7f76-45d6-a7a7-68985169b138');
   adUnit1.addSize(320, 50);
-  adUnit1.addResponceCallback(adUnitCallback);
+  adUnit1.addResponseCallback(adUnitCallback);
 
   const adUnit2 = new BannerAdUnit('Banner_300x250', '0c286d00-b3ee-4550-b15d-f71f8e746865');
   adUnit2.addSize(320, 50);
-  adUnit2.addResponceCallback(adUnitCallback);
+  adUnit2.addResponseCallback(adUnitCallback);
 
   const adUnit3 = new InterstitialAdUnit('Interstitial_Ad_Unit_ID', 'eebc307d-7f76-45d6-a7a7-68985169b138');
-  adUnit3.addResponceCallback(adUnitCallback);
+  adUnit3.addResponseCallback(adUnitCallback);
 
   const adUnits: AdUnit[] = [
     adUnit1,

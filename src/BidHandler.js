@@ -1,5 +1,6 @@
 import AdUnit from './adunit';
 import Adapter from './adapter';
+import Auction from './Auction';
 import { RequestFactory } from './request';
 
 export default class BidHandler {
@@ -24,8 +25,10 @@ export default class BidHandler {
       throw new Error('Bid handler is not active');
     }
 
+    const auction: Auction = new Auction(this.adUnits);
+
     this.adapters.forEach((adapter) => {
-      adapter.request(this.adUnits);
+      adapter.request(auction);
     });
   }
 

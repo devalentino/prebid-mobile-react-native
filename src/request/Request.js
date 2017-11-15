@@ -63,4 +63,39 @@ export default class Request {
     }
     return this.r.sdk;
   }
+
+  serialize(): Object {
+    const serialized = {
+      cache_markup: this.r.cache_markup,
+      sort_bids: this.r.sort_bids,
+      ad_units: [],
+    };
+
+    const device = this.device().serialize();
+    if (Object.keys(device).length) {
+      serialized.device = device;
+    }
+
+    const app = this.app().serialize();
+    if (Object.keys(app).length) {
+      serialized.app = app;
+    }
+
+    const user = this.user().serialize();
+    if (Object.keys(user).length) {
+      serialized.user = user;
+    }
+
+    const sdk = this.sdk().serialize();
+    if (Object.keys(sdk).length) {
+      serialized.sdk = sdk;
+    }
+
+    this.r.adUnits.map(adUnit => serialized.ad_units.push(adUnit.serialize(
+      serialized.device.w,
+      serialized.device.h,
+    )));
+
+    return serialized;
+  }
 }
