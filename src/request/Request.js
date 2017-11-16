@@ -18,7 +18,7 @@ export default class Request {
   }
 
   accountId(accountId: String): Request {
-    this.r.account_id = accountId;
+    this.r.accountId = accountId;
     return this;
   }
 
@@ -68,6 +68,8 @@ export default class Request {
     const serialized = {
       cache_markup: this.r.cache_markup,
       sort_bids: this.r.sort_bids,
+      tid: this.r.tid,
+      account_id: this.r.accountId,
       ad_units: [],
     };
 
