@@ -27,7 +27,13 @@ export default class RequestFactory {
     if (typeof handler !== 'undefined') {
       promise = new Promise((resolve, reject) => {
         handler.call(this, req, resolve.bind(req, req));
-        setInterval(reject, 5 * 1000);
+        const rejectCallback = reject.bind(
+          'request build timeout',
+          'request build timeout',
+        );
+        setInterval(rejectCallback, 20 * 1000);
+      }).catch((error) => {
+        console.error(error);
       });
     } else {
       promise = new Promise((resolve) => {
