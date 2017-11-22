@@ -11,8 +11,8 @@ export default class Request {
     const initAdUnits: AdUnit[] = [];
 
     this.r = {
-      cache_markup: 1,
-      sort_bids: 1,
+      cache_markup: 0,
+      sort_bids: 0,
       adUnits: initAdUnits,
     };
   }

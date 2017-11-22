@@ -89,6 +89,8 @@ export default class AdManager {
 
           doneCallback();
         });
+      }).catch((error) => {
+        console.error(error);
       });
     };
 

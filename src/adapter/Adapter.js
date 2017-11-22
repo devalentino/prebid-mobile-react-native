@@ -19,4 +19,9 @@ export default class Adapter {
     throw new Error('You should extend Adapter ' +
       'and implement this method in subclass!');
   }
+
+  response(response) {
+    throw new Error('You should extend Adapter ' +
+      'and implement this method in subclass!');
+  }
 }

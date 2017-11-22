@@ -12,11 +12,16 @@ export default class PrebidServerAdapter extends Adapter {
     this.requestFactory.request(this.type)
       .then((req) => {
         auction.adUnits.map(adUnit => req.adUnit(adUnit));
-        context.send(req);
+        context.send(req, resp => context.response.call(this, auction, resp));
       });
   }
 
-  send(req: Request) {
+  response(auction: Auction, resp: Object) {
+    console.log(auction);
+    console.log(resp);
+  }
+
+  send(req: Request, successCallback: (auction: Auction) => mixed) {
     fetch('http://prebid.adnxs.com/pbs/v1/auction', {
       method: 'POST',
       headers: {
@@ -25,6 +30,9 @@ export default class PrebidServerAdapter extends Adapter {
       },
       body: JSON.stringify(req.serialize()),
     })
-      .then(response => console.log(response));
+      .then(resp => resp.json())
+      .then((json) => {
+        successCallback(json);
+      });
   }
 }
