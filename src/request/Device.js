@@ -99,7 +99,7 @@ export default class Device {
 
   osv(osv: String): Device {
     this.d.osv = osv;
-    return osv;
+    return this;
   }
 
   serialize() {

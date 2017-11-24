@@ -17,6 +17,16 @@ export default class Request {
     };
   }
 
+  cacheMarkup(cacheMarkup: number): Request {
+    this.r.cache_markup = cacheMarkup;
+    return this;
+  }
+
+  sortBids(sortBids: number): Request {
+    this.r.sort_bids = sortBids;
+    return this;
+  }
+
   accountId(accountId: String): Request {
     this.r.accountId = accountId;
     return this;
