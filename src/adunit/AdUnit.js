@@ -27,7 +27,7 @@ export default class AdUnit {
     this.callbacks.push(callback);
   }
 
-  serialize(width: number, height: number): Object {
+  serialize(): Object {
     const unitSizes = [];
 
     this.sizes.forEach((size) => {

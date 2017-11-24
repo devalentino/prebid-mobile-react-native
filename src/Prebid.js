@@ -1,13 +1,14 @@
 import AdUnit from './adunit';
 import Adapter from './adapter';
 import BidHandler from './BidHandler';
+import Settings from './Settings';
 
 let instance = null;
 
 export default class Prebid {
   bidHandler: BidHandler;
   accountId: String;
-  settings: Object;
+  conf: Settings;
   requestAdsInterval: number;
 
   constructor(adUnits: AdUnit[], accountId:String) {
@@ -15,29 +16,34 @@ export default class Prebid {
       return instance;
     }
 
-    this.bidHandler = new BidHandler();
+    this.bidHandler = new BidHandler(this);
 
     this.accountId = accountId;
-    this.settings = {
-      period: 30 * 1000,
-    };
+    this.conf = new Settings();
 
     adUnits.map(adUnit => this.bidHandler.registerAdUnit(adUnit));
 
     instance = this;
   }
 
-  period(period: number) {
-    this.settings.period = period;
+  settings(settings: Settings): Prebid {
+    this.conf = settings;
     return this;
   }
 
   start() {
-    this.bidHandler.requestAds();
+    this.bidHandler.active = true;
+    this.bidHandler.requestAds(this.conf.adRequestTimeout, this.conf.strategy);
+
+    if (this.conf.adRequestPeriod === 0) return;
 
     this.requestAdsInterval = setInterval(
-      this.bidHandler.requestAds.bind(this.bidHandler),
-      this.settings.period,
+      this.bidHandler.requestAds.bind(
+        this.bidHandler,
+        this.conf.adRequestTimeout,
+        this.conf.strategy,
+      ),
+      this.conf.adRequestPeriod,
     );
   }
 

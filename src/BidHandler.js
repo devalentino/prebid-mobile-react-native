@@ -20,15 +20,19 @@ export default class BidHandler {
     this.adUnits.push(adUnit);
   }
 
-  requestAds() {
+  requestAds(timeout: number, strategy: number) {
     if (!this.active) {
       throw new Error('Bid handler is not active');
     }
 
-    const auction: Auction = new Auction(this.adUnits);
+    const adapters: String[] = [];
+    this.adapters.forEach(adapter => adapters.push(adapter));
+
+    const auction: Auction = new Auction(this.adUnits, adapters, strategy);
+    setTimeout(auction.complete.bind(auction), timeout);
 
     this.adapters.forEach((adapter) => {
-      adapter.request(auction);
+      adapter.request(auction, timeout);
     });
   }
 

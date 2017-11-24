@@ -6,6 +6,7 @@ import Prebid from '../src/Prebid';
 import Request, { Geo } from '../src/request';
 import { PrebidServerAdapter } from '../src/adapter';
 import AdUnit, { BannerAdUnit, InterstitialAdUnit } from '../src/adunit';
+import Settings, { strategies } from '../src/Settings';
 import { accountId, configId1 } from './config';
 
 function getConnectiontype(type) {
@@ -19,7 +20,7 @@ function getConnectiontype(type) {
 
 export default class AdManager {
   getAds() {
-    const adUnitCallback = adUnit => console.log(adUnit);
+    const adUnitCallback = adUnit => console.log('ad unit:', adUnit);
     const adUnit1: AdUnit = new BannerAdUnit('Banner_320x50', configId1);
     adUnit1.addSize(320, 50);
     adUnit1.addResponseCallback(adUnitCallback);
@@ -94,10 +95,14 @@ export default class AdManager {
       });
     };
 
-    const adapter = new PrebidServerAdapter(factory);
+    const settings = new Settings();
+    settings.strategy = strategies.ON_ALL_RESPONSES;
+    settings.adRequestTimeout = 20 * 1000;
+
+    const adapter = new PrebidServerAdapter(10 * 1000, factory);
     this.prebid = new Prebid(adUnits, accountId)
       .registerAdapter(adapter)
-      .period(5 * 1000)
+      .settings(settings)
       .start();
   }
 }

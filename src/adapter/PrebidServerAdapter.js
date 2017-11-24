@@ -3,13 +3,19 @@ import Adapter from './Adapter';
 import Auction from '../Auction';
 
 export default class PrebidServerAdapter extends Adapter {
-  constructor(factory?: (req: Request) => mixed) {
+  buildRequestTimeout: number;
+
+  constructor(
+    buildRequestTimeout: number,
+    factory?: (req: Request) => mixed,
+  ) {
     super('PREBID_SERVER_ADAPTER', factory);
+    this.buildRequestTimeout = buildRequestTimeout;
   }
 
   request(auction: Auction) {
     const context = this;
-    this.requestFactory.request(this.type)
+    this.requestFactory.request(this.type, this.buildRequestTimeout)
       .then((req) => {
         auction.adUnits.map(adUnit => req.adUnit(adUnit));
         context.send(req, resp => context.response.call(this, auction, resp));
@@ -17,12 +23,12 @@ export default class PrebidServerAdapter extends Adapter {
   }
 
   response(auction: Auction, resp: Object) {
-    console.log(auction);
-    console.log(resp);
+    auction.response(this.type, resp);
   }
 
   send(req: Request, successCallback: (auction: Auction) => mixed) {
-    fetch('http://prebid.adnxs.com/pbs/v1/auction', {
+    fetch('http://192.168.0.109:8000/auction', {
+    // fetch('http://prebid.adnxs.com/pbs/v1/auction', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -33,6 +39,7 @@ export default class PrebidServerAdapter extends Adapter {
       .then(resp => resp.json())
       .then((json) => {
         successCallback(json);
-      });
+      })
+      .catch(error => console.warn('error occured:', error));
   }
 }

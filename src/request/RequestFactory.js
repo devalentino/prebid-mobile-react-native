@@ -19,7 +19,7 @@ export default class RequestFactory {
     return new Request();
   }
 
-  request(adapterType: String): Promise<Request> {
+  request(adapterType: String, buildRequestTimeout: number): Promise<Request> {
     const req = RequestFactory.baseRequest();
     const handler = this.strategies[adapterType];
     let promise: Promise<Request>;
@@ -31,7 +31,7 @@ export default class RequestFactory {
           'request build timeout',
           'request build timeout',
         );
-        setInterval(rejectCallback, 20 * 1000);
+        setInterval(rejectCallback, buildRequestTimeout);
       }).catch((error) => {
         console.error(error);
       });
