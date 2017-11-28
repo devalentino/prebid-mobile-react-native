@@ -79,6 +79,29 @@ test('device lmt not in range', () => {
   expect(() => req.device().lmt(2)).toThrow();
 });
 
+test('geo serialization', () => {
+  const req: Request = new Request();
+  const now = new Date().getMilliseconds();
+
+  req.device().geo()
+    .lat(51.5033640)
+    .lon(-0.1276250)
+    .accuracy(20)
+    .lastfix(now);
+
+  expect(req.r.device.d.geo.g.lat).toEqual(51.5033640);
+  expect(req.r.device.d.geo.g.lon).toEqual(-0.1276250);
+  expect(req.r.device.d.geo.g.accuracy).toEqual(20);
+  expect(req.r.device.d.geo.g.lastfix).toEqual(now);
+
+  expect(req.r.device.d.geo.serialize()).toEqual({
+    lat: 51.5033640,
+    lon: -0.1276250,
+    accuracy: 20,
+    lastfix: now,
+  });
+});
+
 test('app serialization', () => {
   const req: Request = new Request();
   req.app()
