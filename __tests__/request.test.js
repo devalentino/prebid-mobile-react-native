@@ -142,6 +142,25 @@ test('geo serialization', () => {
   });
 });
 
+test('geo put built instance', () => {
+  const geo = new Geo();
+  const now = new Date().getMilliseconds();
+
+  geo
+    .lat(51.5033640)
+    .lon(-0.1276250)
+    .accuracy(20)
+    .lastfix(now);
+
+  const req: Request = new Request();
+  req.device().geo(geo);
+
+  expect(req.r.device.d.geo.g.lat).toEqual(51.5033640);
+  expect(req.r.device.d.geo.g.lon).toEqual(-0.1276250);
+  expect(req.r.device.d.geo.g.accuracy).toEqual(20);
+  expect(req.r.device.d.geo.g.lastfix).toEqual(now);
+});
+
 test('app serialization', () => {
   const req: Request = new Request();
   req.app()
