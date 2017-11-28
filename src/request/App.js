@@ -31,6 +31,10 @@ export default class App {
   }
 
   privacypolicy(privacypolicy: number): App {
+    if (privacypolicy !== 0 || privacypolicy !== 1) {
+      throw new RangeError('0 or 1 values acceptable');
+    }
+
     this.a.privacypolicy = privacypolicy;
     return this;
   }

@@ -78,3 +78,35 @@ test('device lmt not in range', () => {
   const req: Request = new Request();
   expect(() => req.device().lmt(2)).toThrow();
 });
+
+test('app serialization', () => {
+  const req: Request = new Request();
+  req.app()
+    .bundle('org.prebid.test.bundle')
+    .ver('0.0.1')
+    .name('Test app')
+    .domain('prebid.org')
+    .storeurl('http://play.google.com/test')
+    .privacypolicy(0);
+
+  expect(req.r.app.a.bundle).toEqual('org.prebid.test.bundle');
+  expect(req.r.app.a.ver).toEqual('0.0.1');
+  expect(req.r.app.a.name).toEqual('Test app');
+  expect(req.r.app.a.domain).toEqual('prebid.org');
+  expect(req.r.app.a.storeurl).toEqual('http://play.google.com/test');
+  expect(req.r.app.a.privacypolicy).toEqual(0);
+
+  expect(req.r.app.serialize()).toEqual({
+    bundle: 'org.prebid.test.bundle',
+    ver: '0.0.1',
+    name: 'Test app',
+    domain: 'prebid.org',
+    storeurl: 'http://play.google.com/test',
+    privacypolicy: 0,
+  });
+});
+
+test('app privacypolicy not in range', () => {
+  const req: Request = new Request();
+  expect(() => req.app().privacypolicy(2)).toThrow();
+});
