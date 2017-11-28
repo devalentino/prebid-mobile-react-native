@@ -194,3 +194,42 @@ test('app privacypolicy not in range', () => {
   const req: Request = new Request();
   expect(() => req.app().privacypolicy(2)).toThrow();
 });
+
+test('user serialization', () => {
+  const req: Request = new Request();
+  req.user()
+    .age(25)
+    .gender('M')
+    .language('EN');
+
+  expect(req.r.user.u.age).toEqual(25);
+  expect(req.r.user.u.gender).toEqual('M');
+  expect(req.r.user.u.language).toEqual('EN');
+
+  expect(req.r.user.serialize()).toEqual({
+    age: 25,
+    gender: 'M',
+    language: 'EN',
+  });
+});
+
+test('user put built instance', () => {
+  const user = new Request().user();
+  user
+    .age(25)
+    .gender('M')
+    .language('EN');
+
+  const req: Request = new Request();
+  req.user(user);
+
+  expect(req.r.user.u.age).toEqual(25);
+  expect(req.r.user.u.gender).toEqual('M');
+  expect(req.r.user.u.language).toEqual('EN');
+
+  expect(req.r.user.serialize()).toEqual({
+    age: 25,
+    gender: 'M',
+    language: 'EN',
+  });
+});
