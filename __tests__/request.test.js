@@ -257,3 +257,92 @@ test('user gender not in range', () => {
   const req: Request = new Request();
   expect(() => req.user().gender('A')).toThrow();
 });
+
+test('request serialization', () => {
+  const req: Request = new Request();
+  const now = new Date().getMilliseconds();
+
+  req.device()
+    .make('Xiaomi')
+    .model('Mi 3')
+    .ua('Mozilla/5.0 (Linux; Android 4.4.4; MI 3W Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.94 Mobile Safari/537.36')
+    .w(1080)
+    .h(1920)
+    .pxratio(441)
+    .mccmnc('310-005')
+    .carrier('VERIZON')
+    .connectiontype(2)
+    .devtime(now)
+    .lmt(0)
+    .ifa('my-adv-id')
+    .os('Android')
+    .osv('4.3');
+
+  req.device().geo()
+    .lat(51.5033640)
+    .lon(-0.1276250)
+    .accuracy(20)
+    .lastfix(now);
+
+  req.app()
+    .bundle('org.prebid.test.bundle')
+    .ver('0.0.1')
+    .name('Test app')
+    .domain('prebid.org')
+    .storeurl('http://play.google.com/test')
+    .privacypolicy(0);
+
+  req.user()
+    .age(25)
+    .gender('M')
+    .language('EN');
+
+  req
+    .cacheMarkup(1)
+    .sortBids(1)
+    .accountId('test-account-id')
+    .tid('test-tid');
+
+  expect(req.serialize()).toEqual({
+    cache_markup: 1,
+    sort_bids: 1,
+    account_id: 'test-account-id',
+    tid: 'test-tid',
+    ad_units: [],
+    device: {
+      make: 'Xiaomi',
+      model: 'Mi 3',
+      ua: 'Mozilla/5.0 (Linux; Android 4.4.4; MI 3W Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.94 Mobile Safari/537.36',
+      w: 1080,
+      h: 1920,
+      pxratio: 441,
+      mccmnc: '310-005',
+      carrier: 'VERIZON',
+      connectiontype: 2,
+      devtime: now,
+      lmt: 0,
+      ifa: 'my-adv-id',
+      os: 'Android',
+      osv: '4.3',
+      geo: {
+        lat: 51.5033640,
+        lon: -0.1276250,
+        accuracy: 20,
+        lastfix: now,
+      },
+    },
+    app: {
+      bundle: 'org.prebid.test.bundle',
+      ver: '0.0.1',
+      name: 'Test app',
+      domain: 'prebid.org',
+      storeurl: 'http://play.google.com/test',
+      privacypolicy: 0,
+    },
+    user: {
+      age: 25,
+      gender: 'M',
+      language: 'EN',
+    },
+  });
+});
