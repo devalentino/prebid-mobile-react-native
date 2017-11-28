@@ -51,8 +51,10 @@ export default class Request {
     return this.r.device;
   }
 
-  app(): App {
-    if (!Object.prototype.hasOwnProperty.call(this.r, 'app')) {
+  app(app?: App): App {
+    if (typeof app !== 'undefined') {
+      this.r.app = app;
+    } else if (!Object.prototype.hasOwnProperty.call(this.r, 'app')) {
       this.r.app = new App();
     }
     return this.r.app;
