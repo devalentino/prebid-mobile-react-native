@@ -252,3 +252,8 @@ test('user put built instance', () => {
     language: 'EN',
   });
 });
+
+test('user gender not in range', () => {
+  const req: Request = new Request();
+  expect(() => req.user().gender('A')).toThrow();
+});
