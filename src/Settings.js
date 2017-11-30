@@ -9,9 +9,15 @@ export default class Settings {
   adRequestTimeout: number;
   strategy: number;
 
-  constructor() {
+  constructor(settings?: Object) {
     this.adRequestPeriod = 2 * 60 * 1000;
     this.adRequestTimeout = 5 * 1000;
     this.strategy = strategies.ON_ALL_RESPONSES;
+
+    if (typeof settings !== 'undefined') {
+      Object.keys(settings).forEach((key) => {
+        this[key] = settings[key];
+      });
+    }
   }
 }

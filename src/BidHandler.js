@@ -8,12 +8,14 @@ export default class BidHandler {
   factory: RequestFactory;
   adapters: Set<Adapter>;
   adUnits: AdUnit[];
+  callbacks: Object;
 
   constructor() {
-    this.active = true;
+    this.active = false;
     this.factory = new RequestFactory();
     this.adapters = new Set();
     this.adUnits = [];
+    this.callbacks = {};
   }
 
   registerAdUnit(adUnit: AdUnit) {
@@ -38,5 +40,9 @@ export default class BidHandler {
 
   addAdapter(adapter: Adapter) {
     this.adapters.add(adapter);
+  }
+
+  addCallback(key: String, callback) {
+    this.callbacks[key] = callback;
   }
 }

@@ -1,9 +1,6 @@
-import AdUnit from './adunit';
 import Adapter from './adapter';
 import BidHandler from './BidHandler';
 import Settings from './Settings';
-
-let instance = null;
 
 export default class Prebid {
   bidHandler: BidHandler;
@@ -11,23 +8,46 @@ export default class Prebid {
   conf: Settings;
   requestAdsInterval: number;
 
-  constructor(adUnits: AdUnit[], accountId:String) {
-    if (instance) {
-      return instance;
-    }
-
+  constructor(args?: Object) {
     this.bidHandler = new BidHandler(this);
 
-    this.accountId = accountId;
-    this.conf = new Settings();
+    if (typeof args === 'undefined') {
+      this.conf = new Settings();
+      return;
+    }
 
-    adUnits.map(adUnit => this.bidHandler.registerAdUnit(adUnit));
+    if (Object.prototype.hasOwnProperty.call(args, 'accountId')) {
+      this.accountId = args.accountId;
+    }
 
-    instance = this;
+    if (Object.prototype.hasOwnProperty.call(args, 'settings')) {
+      this.conf = new Settings(args.settings);
+    } else {
+      this.conf = new Settings();
+    }
+
+    if (Object.prototype.hasOwnProperty.call(args, 'adUnits')) {
+      args.adUnits.map(adUnit => this.bidHandler.registerAdUnit(adUnit));
+    }
+
+    if (Object.prototype.hasOwnProperty.call(args, 'adapters')) {
+      args.adapters.map(adapter => this.registerAdapter(adapter));
+    }
+
+    if (Object.prototype.hasOwnProperty.call(args, 'callbacks')) {
+      Object.keys(args.callbacks).forEach((key) => {
+        this.bidHandler.addCallback(key, args.callbacks[key]);
+      });
+    }
   }
 
-  settings(settings: Settings): Prebid {
-    this.conf = settings;
+  settings(settings: Object): Prebid {
+    this.conf = new Settings(Object.assign({}, this.conf, settings));
+    return this;
+  }
+
+  registerAdapter(adapter: Adapter): Prebid {
+    this.bidHandler.addAdapter(adapter);
     return this;
   }
 
@@ -49,11 +69,7 @@ export default class Prebid {
 
   stop() {
     clearInterval(this.requestAdsInterval);
+    delete this.requestAdsInterval;
     this.bidHandler.active = false;
-  }
-
-  registerAdapter(adapter: Adapter): Prebid {
-    this.bidHandler.addAdapter(adapter);
-    return this;
   }
 }
