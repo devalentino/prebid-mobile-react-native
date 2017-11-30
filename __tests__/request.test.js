@@ -1,4 +1,5 @@
 import Request, { Geo } from '../src/request';
+import AdUnit, { BannerAdUnit, InterstitialAdUnit } from '../src/adunit';
 
 
 test('device serialization', () => {
@@ -283,6 +284,74 @@ test('SDK put built instance', () => {
   expect(req.r.sdk.s.source).toEqual('prebid-react-native');
   expect(req.r.sdk.s.version).toEqual('0.1.0');
   expect(req.r.sdk.s.platform).toEqual('react-native');
+});
+
+test('AdUnit serialization', () => {
+  const adUnit1: AdUnit = new InterstitialAdUnit(
+    'Interstitial',
+    'test-config-id',
+    1080,
+    1920,
+  );
+
+  const adUnit2: AdUnit = new BannerAdUnit('Banner_320x50', 'test-config-id');
+  adUnit2.addSize(320, 50);
+
+  const req: Request = new Request();
+  req.adUnit(adUnit1);
+
+  expect(req.r.adUnits[0].serialize()).toEqual({
+    config_id: 'test-config-id',
+    code: 'Interstitial',
+    sizes: [
+      {
+        w: 300,
+        h: 250,
+      }, {
+        w: 300,
+        h: 600,
+      }, {
+        w: 320,
+        h: 250,
+      }, {
+        w: 254,
+        h: 133,
+      }, {
+        w: 580,
+        h: 400,
+      }, {
+        w: 320,
+        h: 320,
+      }, {
+        w: 320,
+        h: 160,
+      }, {
+        w: 320,
+        h: 480,
+      }, {
+        w: 336,
+        h: 280,
+      }, {
+        w: 320,
+        h: 400,
+      }, {
+        w: 1,
+        h: 1,
+      }],
+  });
+
+  req.adUnit(adUnit2);
+  expect(req.r.adUnits[1].serialize()).toEqual({
+    config_id: 'test-config-id',
+    code: 'Banner_320x50',
+    sizes: [
+      {
+        w: 320,
+        h: 50,
+      }],
+  });
+
+  expect(req.r.adUnits.length).toEqual(2);
 });
 
 test('request serialization', () => {
