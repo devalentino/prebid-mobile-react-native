@@ -14,11 +14,12 @@ export default class PrebidServerAdapter extends Adapter {
   }
 
   request(auction: Auction) {
+    const requestPromise = super.request(this.buildRequestTimeout);
     const context = this;
-    this.requestFactory.request(this.type, this.buildRequestTimeout)
+    requestPromise
       .then((req) => {
         auction.adUnits.map(adUnit => req.adUnit(adUnit));
-        context.send(req, resp => context.response.call(this, auction, resp));
+        context._send(req, resp => context.response.call(this, auction, resp));
       });
   }
 
@@ -26,7 +27,7 @@ export default class PrebidServerAdapter extends Adapter {
     auction.response(this.type, resp);
   }
 
-  send(req: Request, successCallback: (auction: Auction) => mixed) {
+  _send(req: Request, successCallback: (auction: Auction) => mixed) {
     fetch('http://192.168.0.109:8000/auction', {
     // fetch('http://prebid.adnxs.com/pbs/v1/auction', {
       method: 'POST',

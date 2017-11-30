@@ -6,6 +6,7 @@ export default class Auction {
   auctionId: String;
   adUnits: AdUnit[];
   adapters: String[];
+  callbacks: Array<() => {}>;
   strategy: number;
   completed: Boolean;
   result: Object;
@@ -18,6 +19,7 @@ export default class Auction {
   ) {
     this.adUnits = adUnits;
     this.adapters = adapters;
+    this.callbacks = [];
     this.strategy = strategy;
     this.result = {};
     this.completed = false;
@@ -27,6 +29,10 @@ export default class Auction {
     } else {
       this.auctionId = uuid();
     }
+  }
+
+  addCallback(callback: () => mixed) {
+    this.callbacks.push(callback);
   }
 
   response(adapter: String, resp: Object) {
@@ -56,10 +62,8 @@ export default class Auction {
   _deliver() {
     if (Object.keys(this.result).length === 0) return;
 
-    this.adUnits.forEach((adUnit) => {
-      adUnit.callbacks.forEach((callback) => {
-        callback.call(adUnit, this.result);
-      });
+    this.callbacks.forEach((callback) => {
+      callback.call(this, this.result);
     });
   }
 }
