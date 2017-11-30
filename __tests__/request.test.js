@@ -358,6 +358,16 @@ test('request serialization', () => {
   const req: Request = new Request();
   const now = new Date().getMilliseconds();
 
+  const adUnit1: AdUnit = new InterstitialAdUnit(
+    'Interstitial',
+    'test-config-id',
+    1080,
+    1920,
+  );
+
+  const adUnit2: AdUnit = new BannerAdUnit('Banner_320x50', 'test-config-id');
+  adUnit2.addSize(320, 50);
+
   req.device()
     .make('Xiaomi')
     .model('Mi 3')
@@ -404,12 +414,63 @@ test('request serialization', () => {
     .accountId('test-account-id')
     .tid('test-tid');
 
+  req
+    .adUnit(adUnit1)
+    .adUnit(adUnit2);
+
+
   expect(req.serialize()).toEqual({
     cache_markup: 1,
     sort_bids: 1,
     account_id: 'test-account-id',
     tid: 'test-tid',
-    ad_units: [],
+    ad_units: [{
+      config_id: 'test-config-id',
+      code: 'Interstitial',
+      sizes: [
+        {
+          w: 300,
+          h: 250,
+        }, {
+          w: 300,
+          h: 600,
+        }, {
+          w: 320,
+          h: 250,
+        }, {
+          w: 254,
+          h: 133,
+        }, {
+          w: 580,
+          h: 400,
+        }, {
+          w: 320,
+          h: 320,
+        }, {
+          w: 320,
+          h: 160,
+        }, {
+          w: 320,
+          h: 480,
+        }, {
+          w: 336,
+          h: 280,
+        }, {
+          w: 320,
+          h: 400,
+        }, {
+          w: 1,
+          h: 1,
+        }],
+    }, {
+      config_id: 'test-config-id',
+      code: 'Banner_320x50',
+      sizes: [
+        {
+          w: 320,
+          h: 50,
+        }],
+    }],
     device: {
       make: 'Xiaomi',
       model: 'Mi 3',
