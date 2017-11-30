@@ -69,8 +69,10 @@ export default class Request {
     return this.r.user;
   }
 
-  sdk(): SDK {
-    if (!Object.prototype.hasOwnProperty.call(this.r, 'sdk')) {
+  sdk(sdk: SDK): SDK {
+    if (typeof sdk !== 'undefined') {
+      this.r.sdk = sdk;
+    } else if (!Object.prototype.hasOwnProperty.call(this.r, 'sdk')) {
       this.r.sdk = new SDK();
     }
     return this.r.sdk;

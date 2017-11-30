@@ -245,17 +245,44 @@ test('user put built instance', () => {
   expect(req.r.user.u.age).toEqual(25);
   expect(req.r.user.u.gender).toEqual('M');
   expect(req.r.user.u.language).toEqual('EN');
-
-  expect(req.r.user.serialize()).toEqual({
-    age: 25,
-    gender: 'M',
-    language: 'EN',
-  });
 });
 
 test('user gender not in range', () => {
   const req: Request = new Request();
   expect(() => req.user().gender('A')).toThrow();
+});
+
+test('SDK serialization', () => {
+  const req: Request = new Request();
+  req.sdk()
+    .source('prebid-react-native')
+    .version('0.1.0')
+    .platform('react-native');
+
+  expect(req.r.sdk.s.source).toEqual('prebid-react-native');
+  expect(req.r.sdk.s.version).toEqual('0.1.0');
+  expect(req.r.sdk.s.platform).toEqual('react-native');
+
+  expect(req.r.sdk.serialize()).toEqual({
+    source: 'prebid-react-native',
+    version: '0.1.0',
+    platform: 'react-native',
+  });
+});
+
+test('SDK put built instance', () => {
+  const sdk = new Request().sdk();
+  sdk
+    .source('prebid-react-native')
+    .version('0.1.0')
+    .platform('react-native');
+
+  const req: Request = new Request();
+  req.sdk(sdk);
+
+  expect(req.r.sdk.s.source).toEqual('prebid-react-native');
+  expect(req.r.sdk.s.version).toEqual('0.1.0');
+  expect(req.r.sdk.s.platform).toEqual('react-native');
 });
 
 test('request serialization', () => {
@@ -296,6 +323,11 @@ test('request serialization', () => {
     .age(25)
     .gender('M')
     .language('EN');
+
+  req.sdk()
+    .source('prebid-react-native')
+    .version('0.1.0')
+    .platform('react-native');
 
   req
     .cacheMarkup(1)
@@ -343,6 +375,11 @@ test('request serialization', () => {
       age: 25,
       gender: 'M',
       language: 'EN',
+    },
+    sdk: {
+      source: 'prebid-react-native',
+      version: '0.1.0',
+      platform: 'react-native',
     },
   });
 });

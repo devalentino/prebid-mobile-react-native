@@ -5,7 +5,7 @@ export default class SDK {
     this.s = {};
   }
 
-  source(source: number): SDK {
+  source(source: String): SDK {
     this.s.source = source;
     return this;
   }
