@@ -34,7 +34,11 @@ export default class BidHandler {
     setTimeout(auction.complete.bind(auction), timeout);
 
     this.adapters.forEach((adapter) => {
-      adapter.request(auction, timeout);
+      adapter.request(auction, timeout)
+        .then((response) => {
+          adapter.response(response);
+        })
+        .catch(error => console.warn(error));
     });
   }
 

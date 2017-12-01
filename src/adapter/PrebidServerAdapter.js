@@ -1,6 +1,6 @@
 import Request from '../request';
 import Adapter from './Adapter';
-import Auction from '../Auction';
+import AdUnit from '../adunit';
 
 export default class PrebidServerAdapter extends Adapter {
   buildRequestTimeout: number;
@@ -13,26 +13,39 @@ export default class PrebidServerAdapter extends Adapter {
     this.buildRequestTimeout = buildRequestTimeout;
   }
 
-  request(auction: Auction) {
-    const requestPromise = super.request(this.buildRequestTimeout);
-    const context = this;
-    requestPromise
-      .then((req) => {
-        auction.adUnits.map(adUnit => req.adUnit(adUnit));
+  request(adUnits: AdUnit[]): Promise {
+    return new Promise((resolve, reject) => {
+      let requestTimeout = null;
 
-        fetch('http://prebid.adnxs.com/pbs/v1/auction', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(req.serialize()),
-        })
-          .then(resp => resp.json())
-          .then((json) => {
-            auction.response(context.type, json);
+      super.request(this.buildRequestTimeout)
+        .then((req) => {
+          requestTimeout = setTimeout(
+            reject.bind(reject, 'request timeout'),
+            this.buildRequestTimeout,
+          );
+
+          adUnits.map(adUnit => req.adUnit(adUnit));
+
+          fetch('http://prebid.adnxs.com/pbs/v1/auction', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(req.serialize()),
           })
-          .catch(error => console.warn('error occurred:', error));
-      });
+            .then(resp => resp.json())
+            .then((json) => {
+              resolve(json);
+            })
+            .catch(error => reject.call(reject, error.message));
+        })
+        .catch((error) => {
+          if (requestTimeout !== null) {
+            clearTimeout(requestTimeout);
+          }
+          reject.call(reject, error);
+        });
+    });
   }
 }
