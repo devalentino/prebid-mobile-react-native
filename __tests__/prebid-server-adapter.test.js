@@ -19,7 +19,7 @@ test('constructor with factory', () => {
   expect(adapter.factory).toEqual(factory);
 });
 
-test('request', () => {
+test('request factory resolved', () => {
   const now = new Date().getMilliseconds();
 
   const adUnit1 = new InterstitialAdUnit(
@@ -79,10 +79,6 @@ test('request', () => {
       .accountId('test-account-id')
       .tid('test-tid');
 
-    req
-      .adUnit(adUnit1)
-      .adUnit(adUnit2);
-
     resolve();
   };
 
@@ -94,12 +90,17 @@ test('request', () => {
     strategies.ON_EVERY_RESPONSE,
     'test-auction-id',
   );
-  auction.addCallback(() => {});
+  const expected = {};
+  expected[adapter.type] = { test: 'response' };
+  const auctionCallback = jest.fn(() => {});
+  auction.addCallback(auctionCallback);
 
-  adapter._send = jest.fn((req, callback) => {
-    // TODO: find out why it doesn't fail
-    expect(true).toEqual(false);
-  });
+  fetch.mockResponseOnce(JSON.stringify({ test: 'response' }));
 
   adapter.request(auction);
+
+  // TODO: find out how to manage without setTimeout
+  setTimeout(() => {
+    expect(auctionCallback).toHaveBeenCalledWith(expected);
+  }, 0);
 });

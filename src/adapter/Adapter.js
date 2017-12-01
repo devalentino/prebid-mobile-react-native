@@ -1,4 +1,3 @@
-import Auction from '../Auction';
 import Request from '../request';
 
 export default class Adapter {
@@ -14,7 +13,7 @@ export default class Adapter {
     const req: Request = new Request();
     let promise: Promise<Request>;
 
-    if (typeof handler !== 'undefined') {
+    if (typeof this.factory !== 'undefined') {
       promise = new Promise((resolve, reject) => {
         this.factory.call(this, req, resolve.bind(req, req));
         const rejectCallback = reject.bind(
@@ -23,7 +22,7 @@ export default class Adapter {
         );
         setInterval(rejectCallback, buildRequestTimeout);
       }).catch((error) => {
-        console.error(error);
+        throw Error(error.message);
       });
     } else {
       promise = new Promise((resolve) => {

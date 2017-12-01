@@ -19,28 +19,20 @@ export default class PrebidServerAdapter extends Adapter {
     requestPromise
       .then((req) => {
         auction.adUnits.map(adUnit => req.adUnit(adUnit));
-        context._send(req, resp => context.response.call(this, auction, resp));
+
+        fetch('http://prebid.adnxs.com/pbs/v1/auction', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(req.serialize()),
+        })
+          .then(resp => resp.json())
+          .then((json) => {
+            auction.response(context.type, json);
+          })
+          .catch(error => console.warn('error occurred:', error));
       });
-  }
-
-  response(auction: Auction, resp: Object) {
-    auction.response(this.type, resp);
-  }
-
-  _send(req: Request, successCallback: (auction: Auction) => mixed) {
-    fetch('http://192.168.0.109:8000/auction', {
-    // fetch('http://prebid.adnxs.com/pbs/v1/auction', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(req.serialize()),
-    })
-      .then(resp => resp.json())
-      .then((json) => {
-        successCallback(json);
-      })
-      .catch(error => console.warn('error occured:', error));
   }
 }
