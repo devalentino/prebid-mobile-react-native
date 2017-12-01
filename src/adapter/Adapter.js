@@ -16,7 +16,8 @@ export default class Adapter {
     if (typeof this.factory !== 'undefined') {
       promise = new Promise((resolve, reject) => {
         this.factory.call(this, req, resolve.bind(req, req));
-        setTimeout(reject.bind(reject, 'request build timeout'), buildRequestTimeout);
+        const message = `${this.type}: request build timeout`;
+        setTimeout(reject.bind(reject, message), buildRequestTimeout);
       });
     } else {
       promise = new Promise((resolve) => {

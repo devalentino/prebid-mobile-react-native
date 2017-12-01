@@ -2,6 +2,8 @@ import Request from '../request';
 import Adapter from './Adapter';
 import AdUnit from '../adunit';
 
+const type = 'PREBID_SERVER_ADAPTER';
+
 export default class PrebidServerAdapter extends Adapter {
   buildRequestTimeout: number;
 
@@ -9,7 +11,7 @@ export default class PrebidServerAdapter extends Adapter {
     buildRequestTimeout: number,
     factory?: (req: Request) => mixed,
   ) {
-    super('PREBID_SERVER_ADAPTER', factory);
+    super(type, factory);
     this.buildRequestTimeout = buildRequestTimeout;
   }
 
@@ -20,7 +22,7 @@ export default class PrebidServerAdapter extends Adapter {
       super.request(this.buildRequestTimeout)
         .then((req) => {
           requestTimeout = setTimeout(
-            reject.bind(reject, 'request timeout'),
+            reject.bind(reject, `${type}: request timeout`),
             this.buildRequestTimeout,
           );
 
@@ -38,7 +40,9 @@ export default class PrebidServerAdapter extends Adapter {
             .then((json) => {
               resolve(json);
             })
-            .catch(error => reject.call(reject, error.message));
+            .catch((error) => {
+              reject.call(reject, `${type}: request failed`);
+            });
         })
         .catch((error) => {
           if (requestTimeout !== null) {
