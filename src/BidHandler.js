@@ -2,6 +2,7 @@ import AdUnit from './adunit';
 import Adapter from './adapter';
 import Auction from './Auction';
 import { RequestFactory } from './request';
+import { strategies } from './Settings';
 
 export default class BidHandler {
   active: boolean;
@@ -27,16 +28,13 @@ export default class BidHandler {
       throw new Error('Bid handler is not active');
     }
 
-    const adapters: String[] = [];
-    this.adapters.forEach(adapter => adapters.push(adapter));
-
-    const auction: Auction = new Auction(this.adUnits, adapters, strategy);
-    setTimeout(auction.complete.bind(auction), timeout);
+    const context: BidHandler = this;
+    const auction: Auction = new Auction(this.adUnits);
 
     this.adapters.forEach((adapter) => {
       adapter.request(auction, timeout)
         .then((response) => {
-          adapter.response(response);
+          context.response(adapter, strategy, auction, response);
         })
         .catch(error => console.warn(error));
     });
@@ -48,5 +46,39 @@ export default class BidHandler {
 
   addCallback(key: String, callback) {
     this.callbacks[key] = callback;
+  }
+
+  response(adapter: Adapter, strategy: number, auction: Auction, resp: Object) {
+    if (this.completed) return;
+
+    auction.addResponse(adapter.type, resp);
+
+    switch (strategy) {
+      case strategies.ON_FIRST_RESPONSE:
+        this.complete();
+        return;
+      case strategies.ON_EVERY_RESPONSE:
+        this.deliver();
+        return;
+      default:
+        if (Object.keys(this.result).length === this.adapters.length) {
+          this.complete();
+        }
+    }
+  }
+
+  complete(auction: Auction) {
+    auction.complete();
+    this.deliver(auction);
+  }
+
+  deliver(auction: Auction) {
+    if (auction.completed) {
+      return;
+    }
+
+    if (typeof this.callbacks.onAuction !== 'undefined') {
+      this.callbacks.onAuction.call(auction, auction);
+    }
   }
 }
