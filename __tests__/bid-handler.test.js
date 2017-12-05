@@ -96,6 +96,33 @@ test('request Ads', (done) => {
     .not.toThrow('Bid handler is not active');
 });
 
+test('request Ads failed', (done) => {
+  const handler: BidHandler = new BidHandler();
+
+  const adUnit: AdUnit = new BannerAdUnit('Banner_320x50', 'test-config-id');
+  adUnit.addSize(320, 50);
+  handler.registerAdUnit(adUnit);
+
+  const myAdapter: Adapter = new PrebidServerAdapter('test-account-id', 1000);
+  myAdapter.request = jest.fn(() =>
+    new Promise((resolve, reject) => { reject(); }));
+  handler.registerAdapter(myAdapter);
+
+  handler.response = jest.fn((adapter, strategy, auction, response) => {
+    expect(response).toHaveProperty('status', 'request error occured');
+    expect(response).toHaveProperty('err');
+
+    expect(strategy).toEqual(strategies.ON_FIRST_RESPONSE);
+    expect(adapter).toEqual(myAdapter);
+    expect(auction).not.toBeUndefined();
+    done();
+  });
+
+  handler.active = true;
+  expect(() => { handler.requestAds(1000, strategies.ON_FIRST_RESPONSE); })
+    .not.toThrow('Bid handler is not active');
+});
+
 test('response ON_FIRST_RESPONSE', () => {
   const handler: BidHandler = new BidHandler();
   handler.complete = jest.fn();

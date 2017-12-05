@@ -33,7 +33,17 @@ export default class BidHandler {
         .then((response) => {
           context.response(adapter, strategy, auction, response);
         })
-        .catch(error => console.warn(error));
+        .catch((error) => {
+          context.response(
+            adapter,
+            strategy,
+            auction,
+            {
+              status: 'request error occured',
+              err: error,
+            },
+          );
+        });
     });
   }
 
