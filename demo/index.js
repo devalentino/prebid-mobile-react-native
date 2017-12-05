@@ -6,8 +6,8 @@ import Prebid from '../src/Prebid';
 import Request, { Geo } from '../src/request';
 import { PrebidServerAdapter } from '../src/adapter';
 import AdUnit, { BannerAdUnit, InterstitialAdUnit } from '../src/adunit';
-import Settings, { strategies } from '../src/Settings';
-import { accountId, configId1 } from './config';
+import { strategies } from '../src/Settings';
+import { accountId, configId } from './config';
 
 function getConnectiontype(type) {
   switch (type) {
@@ -20,16 +20,17 @@ function getConnectiontype(type) {
 
 export default class AdManager {
   getAds() {
-    const adUnitCallback = adUnit => console.log('ad unit:', adUnit);
-    const adUnit1: AdUnit = new BannerAdUnit('Banner_320x50', configId1);
-    adUnit1.addSize(320, 50);
-    adUnit1.addResponseCallback(adUnitCallback);
+    const adUnit1: AdUnit = new InterstitialAdUnit(
+      'Interstitial',
+      configId,
+      1080,
+      1920,
+    );
 
-    const adUnits: AdUnit[] = [
-      adUnit1,
-    ];
+    const adUnit2: AdUnit = new BannerAdUnit('Banner_320x50', configId);
+    adUnit2.addSize(320, 50);
 
-    const factory = (req: Request, doneCallback) => {
+    const prebidAdapterFactory = (req: Request, resolve: () => mixed) => {
       const { height, width } = Dimensions.get('window');
 
       req.device()
@@ -88,21 +89,36 @@ export default class AdManager {
             .lastfix(0);
           req.device().geo(geo);
 
-          doneCallback();
+          resolve();
         });
       }).catch((error) => {
         console.error(error);
       });
     };
 
-    const settings = new Settings();
-    settings.strategy = strategies.ON_ALL_RESPONSES;
-    settings.adRequestTimeout = 20 * 1000;
+    const prebidServerAdapter = new PrebidServerAdapter(
+      accountId,
+      10 * 1000,
+      prebidAdapterFactory,
+    );
 
-    const adapter = new PrebidServerAdapter(10 * 1000, factory);
-    this.prebid = new Prebid(adUnits, accountId)
-      .registerAdapter(adapter)
-      .settings(settings)
-      .start();
+    const onAuctionCallback = (auction) => {
+      console.log(auction);
+    };
+
+    this.prebid = new Prebid({
+      settings: {
+        adRequestPeriod: 5 * 60 * 1000,
+        adRequestTimeout: 6 * 1000,
+        strategy: strategies.ON_EVERY_RESPONSE,
+      },
+      adUnits: [adUnit1, adUnit2],
+      adapters: [prebidServerAdapter],
+      callbacks: {
+        onAuction: [onAuctionCallback],
+      },
+    });
+
+    this.prebid.start();
   }
 }
