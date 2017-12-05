@@ -58,7 +58,7 @@ test('constructor default settings', () => {
 });
 
 test('constructor adapters', () => {
-  const adapter: Adapter = new PrebidServerAdapter(5 * 1000);
+  const adapter: Adapter = new PrebidServerAdapter('test-account-id', 5 * 1000);
 
   const prebidArgs = {
     adapters: [adapter],
@@ -70,7 +70,7 @@ test('constructor adapters', () => {
 });
 
 test('constructor adapters no duplicates', () => {
-  const adapter: Adapter = new PrebidServerAdapter(5 * 1000);
+  const adapter: Adapter = new PrebidServerAdapter('test-account-id', 5 * 1000);
 
   const prebidArgs = {
     adapters: [adapter, adapter],
@@ -94,7 +94,7 @@ test('constructor callbacks', () => {
 
   expect(prebid.bidHandler.callbacks).toHaveProperty(
     'onAuction',
-    onAuctionCallback,
+    [onAuctionCallback],
   );
 });
 
@@ -129,7 +129,7 @@ test('register adapter', () => {
 
   expect(prebid.bidHandler.adapters.size).toEqual(0);
 
-  const adapter: Adapter = new PrebidServerAdapter(5 * 1000);
+  const adapter: Adapter = new PrebidServerAdapter('test-account-id', 5 * 1000);
   prebid.registerAdapter(adapter);
 
   expect(prebid.bidHandler.adapters.size).toEqual(1);

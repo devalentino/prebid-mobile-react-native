@@ -30,7 +30,7 @@ test('register Adapter', () => {
 
   expect(handler.adapters.size).toEqual(0);
 
-  const adapter: Adapter = new PrebidServerAdapter();
+  const adapter: Adapter = new PrebidServerAdapter('test-account-id', 1000);
   handler.registerAdapter(adapter);
 
   expect(handler.adapters.size).toEqual(1);
@@ -74,7 +74,7 @@ test('request Ads', (done) => {
   adUnit.addSize(320, 50);
   handler.registerAdUnit(adUnit);
 
-  const myAdapter: Adapter = new PrebidServerAdapter();
+  const myAdapter: Adapter = new PrebidServerAdapter('test-account-id', 1000);
   myAdapter.request = jest.fn(() =>
     new Promise(resolve => resolve({ test: 'response' })));
   handler.registerAdapter(myAdapter);
@@ -102,7 +102,7 @@ test('request Ads', (done) => {
   adUnit.addSize(320, 50);
   handler.registerAdUnit(adUnit);
 
-  const myAdapter: Adapter = new PrebidServerAdapter();
+  const myAdapter: Adapter = new PrebidServerAdapter('test-account-id', 1000);
   myAdapter.request = jest.fn(() =>
     new Promise(resolve => resolve({ test: 'response' })));
   handler.registerAdapter(myAdapter);

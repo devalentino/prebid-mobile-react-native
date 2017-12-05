@@ -4,7 +4,7 @@ import Auction from '../src/Auction';
 import { strategies } from '../src/Settings';
 
 test('constructor', () => {
-  const adapter = new PrebidServerAdapter(1000);
+  const adapter = new PrebidServerAdapter('test-account-id', 1000);
 
   expect(adapter.type).toEqual(types.PREBID_SERVER_ADAPTER);
   expect(adapter.buildRequestTimeout).toEqual(1000);
@@ -14,7 +14,7 @@ test('constructor with factory', () => {
   const factory = (req, resolve) => {
     resolve();
   };
-  const adapter = new PrebidServerAdapter(1000, factory);
+  const adapter = new PrebidServerAdapter('test-account-id', 1000, factory);
 
   expect(adapter.factory).toEqual(factory);
 });
@@ -82,7 +82,7 @@ test('request factory resolved', () => {
     resolve();
   };
 
-  const adapter = new PrebidServerAdapter(1000, factory);
+  const adapter = new PrebidServerAdapter('test-account-id', 1000, factory);
 
   const auction = new Auction(
     [adUnit1, adUnit2],
@@ -164,7 +164,7 @@ test('request factory timeout', () => {
     }, 1200);
   };
 
-  const adapter = new PrebidServerAdapter(1000, factory);
+  const adapter = new PrebidServerAdapter('test-account-id', 1000, factory);
 
   const auction = new Auction(
     [adUnit1, adUnit2],
@@ -245,7 +245,7 @@ test('request failed', () => {
     resolve();
   };
 
-  const adapter = new PrebidServerAdapter(1000, factory);
+  const adapter = new PrebidServerAdapter('test-account-id', 1000, factory);
 
   const auction = new Auction(
     [adUnit1, adUnit2],

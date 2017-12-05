@@ -5,13 +5,16 @@ import AdUnit from '../adunit';
 const type = 'PREBID_SERVER_ADAPTER';
 
 export default class PrebidServerAdapter extends Adapter {
+  accountId: String;
   buildRequestTimeout: number;
 
   constructor(
+    accountId: String,
     buildRequestTimeout: number,
     factory?: (req: Request) => mixed,
   ) {
     super(type, factory);
+    this.accountId = accountId;
     this.buildRequestTimeout = buildRequestTimeout;
   }
 
@@ -20,12 +23,13 @@ export default class PrebidServerAdapter extends Adapter {
       let requestTimeout = null;
 
       super.request(this.buildRequestTimeout)
-        .then((req) => {
+        .then((req: Request) => {
           requestTimeout = setTimeout(
             reject.bind(reject, `${type}: request timeout`),
             this.buildRequestTimeout,
           );
 
+          req.accountId(this.accountId);
           adUnits.map(adUnit => req.adUnit(adUnit));
 
           fetch('http://prebid.adnxs.com/pbs/v1/auction', {
@@ -40,7 +44,7 @@ export default class PrebidServerAdapter extends Adapter {
             .then((json) => {
               resolve(json);
             })
-            .catch((error) => {
+            .catch(() => {
               reject.call(reject, `${type}: request failed`);
             });
         })
