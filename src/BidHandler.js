@@ -53,14 +53,14 @@ export default class BidHandler {
 
     switch (strategy) {
       case strategies.ON_FIRST_RESPONSE:
-        this.complete();
+        this.complete(auction);
         return;
       case strategies.ON_EVERY_RESPONSE:
-        this.deliver();
+        this.deliver(auction);
         return;
       default:
-        if (Object.keys(this.result).length === this.adapters.length) {
-          this.complete();
+        if (Object.keys(auction.result).length === this.adapters.size) {
+          this.complete(auction);
         }
     }
   }

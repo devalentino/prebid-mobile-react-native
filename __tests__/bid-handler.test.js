@@ -1,6 +1,7 @@
 import BidHandler from '../src/BidHandler';
 import AdUnit, { BannerAdUnit } from '../src/adunit';
 import Adapter, { PrebidServerAdapter } from '../src/adapter';
+import Auction from '../src/Auction';
 import { strategies } from '../src/Settings';
 
 test('constructor', () => {
@@ -95,31 +96,113 @@ test('request Ads', (done) => {
     .not.toThrow('Bid handler is not active');
 });
 
-test('request Ads', (done) => {
+test('response ON_FIRST_RESPONSE', () => {
   const handler: BidHandler = new BidHandler();
+  handler.complete = jest.fn();
 
-  const adUnit: AdUnit = new BannerAdUnit('Banner_320x50', 'test-config-id');
-  adUnit.addSize(320, 50);
-  handler.registerAdUnit(adUnit);
+  const adapter: Adapter = new PrebidServerAdapter('test-account-id', 1000);
 
-  const myAdapter: Adapter = new PrebidServerAdapter('test-account-id', 1000);
-  myAdapter.request = jest.fn(() =>
-    new Promise(resolve => resolve({ test: 'response' })));
-  handler.registerAdapter(myAdapter);
+  const auction: Auction = new Auction();
+  auction.addResponse = jest.fn();
 
-  handler.response = jest.fn((adapter, strategy, auction, response) => {
-    expect(response).toEqual({ test: 'response' });
-    expect(strategy).toEqual(strategies.ON_FIRST_RESPONSE);
-    expect(adapter).toEqual(myAdapter);
-    expect(auction).not.toBeUndefined();
-    done();
-  });
+  handler.response(
+    adapter,
+    strategies.ON_FIRST_RESPONSE,
+    auction,
+    { test: 'response' },
+  );
 
-  expect(() => { handler.requestAds(1000, strategies.ON_FIRST_RESPONSE); })
-    .toThrow('Bid handler is not active');
+  expect(auction.addResponse)
+    .toHaveBeenCalledWith(adapter.type, { test: 'response' });
+  expect(handler.complete).toHaveBeenCalledWith(auction);
+});
 
-  handler.active = true;
-  expect(() => { handler.requestAds(1000, strategies.ON_FIRST_RESPONSE); })
-    .not.toThrow('Bid handler is not active');
+test('response ON_EVERY_RESPONSE', () => {
+  const handler: BidHandler = new BidHandler();
+  handler.complete = jest.fn();
+  handler.deliver = jest.fn();
+
+  const adapter: Adapter = new PrebidServerAdapter('test-account-id', 1000);
+
+  const auction: Auction = new Auction();
+  auction.addResponse = jest.fn();
+
+  handler.response(
+    adapter,
+    strategies.ON_EVERY_RESPONSE,
+    auction,
+    { test: 'response' },
+  );
+
+  expect(auction.addResponse)
+    .toHaveBeenCalledWith(adapter.type, { test: 'response' });
+  expect(handler.complete).not.toHaveBeenCalled();
+  expect(handler.deliver).toHaveBeenCalledWith(auction);
+});
+
+test('response ON_ALL_RESPONSES not all', () => {
+  class TestAdapter extends Adapter {
+    constructor() {
+      super('test-adapter');
+    }
+  }
+
+  const handler: BidHandler = new BidHandler();
+  handler.complete = jest.fn();
+  handler.deliver = jest.fn();
+
+  const adapter: Adapter = new PrebidServerAdapter('test-account-id', 1000);
+
+  handler.registerAdapter(adapter);
+  handler.registerAdapter(new TestAdapter());
+
+  const auction: Auction = new Auction();
+
+  handler.response(
+    adapter,
+    strategies.ON_ALL_RESPONSES,
+    auction,
+    { test: 'response' },
+  );
+
+  expect(handler.complete).not.toHaveBeenCalled();
+});
+
+test('response ON_ALL_RESPONSES all', () => {
+  class TestAdapter extends Adapter {
+    constructor() {
+      super('test-adapter');
+    }
+  }
+
+  const handler: BidHandler = new BidHandler();
+  handler.complete = jest.fn();
+  handler.deliver = jest.fn();
+
+  const adapter: Adapter = new PrebidServerAdapter('test-account-id', 1000);
+  const adapter2: Adapter = new TestAdapter();
+
+  handler.registerAdapter(adapter);
+  handler.registerAdapter(adapter2);
+
+  const auction: Auction = new Auction();
+
+  handler.response(
+    adapter,
+    strategies.ON_ALL_RESPONSES,
+    auction,
+    { test: 'response' },
+  );
+
+  expect(handler.complete).not.toHaveBeenCalled();
+
+  handler.response(
+    adapter2,
+    strategies.ON_ALL_RESPONSES,
+    auction,
+    { test: 'response' },
+  );
+
+  expect(handler.complete).toHaveBeenCalledWith(auction);
 });
 
