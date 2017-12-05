@@ -31,7 +31,9 @@ export default class Prebid {
 
     if (Object.prototype.hasOwnProperty.call(args, 'callbacks')) {
       Object.keys(args.callbacks).forEach((key) => {
-        this.bidHandler.addCallback(key, args.callbacks[key]);
+        args.callbacks[key].forEach((callback) => {
+          this.bidHandler.addCallback(key, callback);
+        });
       });
     }
   }

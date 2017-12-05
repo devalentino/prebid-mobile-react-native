@@ -76,7 +76,7 @@ test('constructor callbacks', () => {
 
   const prebidArgs = {
     callbacks: {
-      onAuction: onAuctionCallback,
+      onAuction: [onAuctionCallback],
     },
   };
 
