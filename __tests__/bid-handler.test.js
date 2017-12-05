@@ -206,3 +206,55 @@ test('response ON_ALL_RESPONSES all', () => {
   expect(handler.complete).toHaveBeenCalledWith(auction);
 });
 
+test('complete', () => {
+  const handler: BidHandler = new BidHandler();
+  handler.deliver = jest.fn();
+
+  const auction: Auction = new Auction();
+  auction.complete = jest.fn();
+
+  handler.complete(auction);
+
+  expect(auction.complete).toHaveBeenCalled();
+  expect(handler.deliver).toHaveBeenCalledWith(auction);
+});
+
+test('deliver', () => {
+  const callback = jest.fn();
+
+  const handler: BidHandler = new BidHandler();
+  handler.addCallback('onAuction', callback);
+
+  const auction: Auction = new Auction();
+
+  handler.deliver(auction);
+
+  expect(callback).toHaveBeenCalledWith(auction);
+});
+
+test('deliver no onAuction callbacks', () => {
+  const callback = jest.fn();
+
+  const handler: BidHandler = new BidHandler();
+  handler.addCallback('notOnAuction', callback);
+
+  const auction: Auction = new Auction();
+
+  handler.deliver(auction);
+
+  expect(callback).not.toHaveBeenCalledWith(auction);
+});
+
+test('deliver completed auction', () => {
+  const callback = jest.fn();
+
+  const handler: BidHandler = new BidHandler();
+  handler.addCallback('onAuction', callback);
+
+  const auction: Auction = new Auction();
+  auction.completed = true;
+
+  handler.deliver(auction);
+
+  expect(callback).not.toHaveBeenCalled();
+});

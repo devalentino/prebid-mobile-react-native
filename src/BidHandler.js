@@ -76,7 +76,8 @@ export default class BidHandler {
     }
 
     if (typeof this.callbacks.onAuction !== 'undefined') {
-      this.callbacks.onAuction.call(auction, auction);
+      this.callbacks.onAuction
+        .forEach(callback => callback.call(auction, auction));
     }
   }
 }
