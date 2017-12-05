@@ -4,7 +4,6 @@ import Settings from './Settings';
 
 export default class Prebid {
   bidHandler: BidHandler;
-  accountId: String;
   conf: Settings;
   requestAdsInterval: number;
 
@@ -14,10 +13,6 @@ export default class Prebid {
     if (typeof args === 'undefined') {
       this.conf = new Settings();
       return;
-    }
-
-    if (Object.prototype.hasOwnProperty.call(args, 'accountId')) {
-      this.accountId = args.accountId;
     }
 
     if (Object.prototype.hasOwnProperty.call(args, 'settings')) {
@@ -69,7 +64,7 @@ export default class Prebid {
 
   stop() {
     clearInterval(this.requestAdsInterval);
-    delete this.requestAdsInterval;
+    this.requestAdsInterval = null;
     this.bidHandler.active = false;
   }
 }

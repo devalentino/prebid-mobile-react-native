@@ -21,6 +21,7 @@ export default class PrebidServerAdapter extends Adapter {
   request(adUnits: AdUnit[]): Promise {
     return new Promise((resolve, reject) => {
       let requestTimeout = null;
+      const context: PrebidServerAdapter = this;
 
       super.request(this.buildRequestTimeout)
         .then((req: Request) => {
@@ -29,10 +30,10 @@ export default class PrebidServerAdapter extends Adapter {
             this.buildRequestTimeout,
           );
 
-          req.accountId(this.accountId);
+          req.accountId(context.accountId);
           adUnits.map(adUnit => req.adUnit(adUnit));
 
-          fetch('http://prebid.adnxs.com/pbs/v1/auction', {
+          fetch('https://prebid.adnxs.com/pbs/v1/auction', {
             method: 'POST',
             headers: {
               Accept: 'application/json',

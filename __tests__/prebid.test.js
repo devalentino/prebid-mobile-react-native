@@ -3,16 +3,6 @@ import Prebid from '../src/Prebid';
 import { strategies } from '../src/Settings';
 import Adapter, { PrebidServerAdapter } from '../src/adapter';
 
-test('constructor accountId', () => {
-  const prebidArgs = {
-    accountId: 'test-account-id',
-  };
-
-  const prebid: Prebid = new Prebid(prebidArgs);
-
-  expect(prebid.accountId).toEqual('test-account-id');
-});
-
 test('constructor adUnits', () => {
   const adUnit1: AdUnit = new InterstitialAdUnit(
     'Interstitial',
@@ -172,5 +162,5 @@ test('stop', () => {
   prebid.stop();
 
   expect(prebid.bidHandler.active).toEqual(false);
-  expect(prebid.requestAdsInterval).toBeUndefined();
+  expect(prebid.requestAdsInterval).toBe(null);
 });

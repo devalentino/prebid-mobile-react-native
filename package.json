@@ -35,7 +35,7 @@
 		"preset": "react-native",
 		"automock": false,
 		"setupFiles": [
-			"./__tests__/setupJest.js"
+			"./setupJest.js"
 		]
 	}
 }
