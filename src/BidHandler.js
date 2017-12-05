@@ -1,19 +1,16 @@
 import AdUnit from './adunit';
 import Adapter from './adapter';
 import Auction from './Auction';
-import { RequestFactory } from './request';
 import { strategies } from './Settings';
 
 export default class BidHandler {
   active: boolean;
-  factory: RequestFactory;
   adapters: Set<Adapter>;
   adUnits: AdUnit[];
   callbacks: Object;
 
   constructor() {
     this.active = false;
-    this.factory = new RequestFactory();
     this.adapters = new Set();
     this.adUnits = [];
     this.callbacks = {};
@@ -40,12 +37,13 @@ export default class BidHandler {
     });
   }
 
-  addAdapter(adapter: Adapter) {
+  registerAdapter(adapter: Adapter) {
     this.adapters.add(adapter);
   }
 
   addCallback(key: String, callback) {
-    this.callbacks[key] = callback;
+    this.callbacks[key] = this.callbacks[key] || [];
+    this.callbacks[key].push(callback);
   }
 
   response(adapter: Adapter, strategy: number, auction: Auction, resp: Object) {

@@ -47,7 +47,7 @@ export default class Prebid {
   }
 
   registerAdapter(adapter: Adapter): Prebid {
-    this.bidHandler.addAdapter(adapter);
+    this.bidHandler.registerAdapter(adapter);
     return this;
   }
 
