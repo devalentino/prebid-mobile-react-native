@@ -1,0 +1,6 @@
+{
+	"name": "prebid-mobile-react-native",
+	"main": "index.js",
+	"version": "0.0.1",
+	"private": false
+}

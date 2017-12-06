@@ -5,7 +5,7 @@
 	"private": false,
 	"scripts": {
 		"test": "jest",
-        "build": "rm -rf ./dist && mkdir ./dist && browserify index.js -t [ babelify --presets [ es2015 react-native stage-0 ] ] | uglifyjs -c > ./dist/index.js"
+        "build": "rm ./dist/index.js && browserify index.js -t [ babelify --presets [ es2015 react-native stage-0 ] ] | uglifyjs -c > ./dist/index.js"
 	},
 	"dependencies": {
 		"uuid": "^3.1.0"
