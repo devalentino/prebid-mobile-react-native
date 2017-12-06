@@ -10,7 +10,9 @@ test('constructor', () => {
   expect(handler.active).toEqual(false);
   expect(handler.adapters.size).toEqual(0);
   expect(handler.adUnits.length).toEqual(0);
-  expect(Object.keys(handler.callbacks).length).toEqual(0);
+  expect(Object.keys(handler.callbacks).length).toEqual(2);
+  expect(handler.callbacks).toHaveProperty('onAuction', []);
+  expect(handler.callbacks).toHaveProperty('onError', []);
 });
 
 test('register AdUnit', () => {
@@ -41,31 +43,41 @@ test('register Adapter', () => {
 test('add Callback', () => {
   const handler: BidHandler = new BidHandler();
 
-  expect(Object.keys(handler.callbacks).length).toEqual(0);
-
   const callback = () => {};
   handler.addCallback('onAuction', callback);
 
-  expect(Object.keys(handler.callbacks).length).toEqual(1);
+  expect(handler.callbacks.onAuction.length).toEqual(1);
+  expect(handler.callbacks.onAuction[0]).toEqual(callback);
+
+  handler.addCallback('onError', callback);
+
+  expect(handler.callbacks.onAuction.length).toEqual(1);
   expect(handler.callbacks.onAuction[0]).toEqual(callback);
 });
 
 test('add multiple Callbacks', () => {
   const handler: BidHandler = new BidHandler();
 
-  expect(Object.keys(handler.callbacks).length).toEqual(0);
-
   const callback = () => {};
   handler.addCallback('onAuction', callback);
   handler.addCallback('onAuction', callback);
   handler.addCallback('onAuction', callback);
 
-  expect(Object.keys(handler.callbacks).length).toEqual(1);
   expect(handler.callbacks.onAuction.length).toEqual(3);
 
   expect(handler.callbacks.onAuction[0]).toEqual(callback);
   expect(handler.callbacks.onAuction[1]).toEqual(callback);
   expect(handler.callbacks.onAuction[2]).toEqual(callback);
+
+  handler.addCallback('onError', callback);
+  handler.addCallback('onError', callback);
+  handler.addCallback('onError', callback);
+
+  expect(handler.callbacks.onError.length).toEqual(3);
+
+  expect(handler.callbacks.onError[0]).toEqual(callback);
+  expect(handler.callbacks.onError[1]).toEqual(callback);
+  expect(handler.callbacks.onError[2]).toEqual(callback);
 });
 
 test('request Ads', (done) => {
@@ -296,16 +308,19 @@ test('complete', () => {
 });
 
 test('deliver', () => {
-  const callback = jest.fn();
+  const callback1 = jest.fn();
+  const callback2 = jest.fn();
 
   const handler: BidHandler = new BidHandler();
-  handler.addCallback('onAuction', callback);
+  handler.addCallback('onAuction', callback1);
+  handler.addCallback('onAuction', callback2);
 
   const auction: Auction = new Auction();
 
   handler.deliver(auction);
 
-  expect(callback).toHaveBeenCalledWith(auction);
+  expect(callback1).toHaveBeenCalledWith(auction);
+  expect(callback2).toHaveBeenCalledWith(auction);
 });
 
 test('deliver no onAuction callbacks', () => {
