@@ -6,6 +6,7 @@ export default class Auction {
   adUnits: AdUnit[];
   completed: Boolean;
   result: Object;
+  errors: Object;
 
   constructor(
     adUnits: AdUnit[],
@@ -13,6 +14,7 @@ export default class Auction {
   ) {
     this.adUnits = adUnits;
     this.result = {};
+    this.errors = {};
     this.completed = false;
 
     if (typeof auctionId !== 'undefined') {
@@ -24,6 +26,10 @@ export default class Auction {
 
   addResponse(adapter: String, response: Object) {
     this.result[adapter] = response;
+  }
+
+  addError(adapter: String, error: Error) {
+    this.errors[adapter] = error;
   }
 
   complete() {

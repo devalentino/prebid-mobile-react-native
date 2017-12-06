@@ -13,7 +13,10 @@ export default class BidHandler {
     this.active = false;
     this.adapters = new Set();
     this.adUnits = [];
-    this.callbacks = {};
+    this.callbacks = {
+      onError: [],
+      onAuction: [],
+    };
   }
 
   registerAdUnit(adUnit: AdUnit) {
@@ -34,15 +37,7 @@ export default class BidHandler {
           context.response(adapter, strategy, auction, response);
         })
         .catch((error) => {
-          context.response(
-            adapter,
-            strategy,
-            auction,
-            {
-              status: 'request error occured',
-              err: error,
-            },
-          );
+          context.error(adapter, strategy, auction, error);
         });
     });
   }
@@ -58,9 +53,20 @@ export default class BidHandler {
 
   response(adapter: Adapter, strategy: number, auction: Auction, resp: Object) {
     if (this.completed) return;
-
     auction.addResponse(adapter.type, resp);
 
+    this.executeStrategy(auction, strategy);
+  }
+
+  error(adapter: Adapter, strategy: number, auction: Auction, error: Error) {
+    auction.addError(adapter.type, error);
+    this.callbacks.onError
+      .forEach(callback => callback.call(callback, adapter.type, error));
+
+    this.executeStrategy(auction, strategy);
+  }
+
+  executeStrategy(auction: Auction, strategy: number) {
     switch (strategy) {
       case strategies.ON_FIRST_RESPONSE:
         this.complete(auction);
@@ -69,7 +75,8 @@ export default class BidHandler {
         this.deliver(auction);
         return;
       default:
-        if (Object.keys(auction.result).length === this.adapters.size) {
+        if (Object.keys(auction.result).length
+          + Object.keys(auction.errors).length === this.adapters.size) {
           this.complete(auction);
         }
     }

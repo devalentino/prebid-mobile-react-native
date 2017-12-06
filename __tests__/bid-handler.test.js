@@ -105,18 +105,67 @@ test('request Ads failed', (done) => {
 
   const myAdapter: Adapter = new PrebidServerAdapter('test-account-id', 1000);
   myAdapter.request = jest.fn(() =>
-    new Promise((resolve, reject) => { reject(); }));
+    new Promise((resolve, reject) => { reject('request error occurred'); }));
   handler.registerAdapter(myAdapter);
 
-  handler.response = jest.fn((adapter, strategy, auction, response) => {
-    expect(response).toHaveProperty('status', 'request error occured');
-    expect(response).toHaveProperty('err');
+  handler.error = jest.fn((adapter, strategy, auction, error) => {
+    expect(error).toEqual('request error occurred');
 
     expect(strategy).toEqual(strategies.ON_FIRST_RESPONSE);
     expect(adapter).toEqual(myAdapter);
     expect(auction).not.toBeUndefined();
     done();
   });
+
+  handler.active = true;
+  expect(() => { handler.requestAds(1000, strategies.ON_FIRST_RESPONSE); })
+    .not.toThrow('Bid handler is not active');
+});
+
+test('onError callbacks called', (done) => {
+  const handler: BidHandler = new BidHandler();
+
+  const adUnit: AdUnit = new BannerAdUnit('Banner_320x50', 'test-config-id');
+  adUnit.addSize(320, 50);
+  handler.registerAdUnit(adUnit);
+
+  const adapter: Adapter = new PrebidServerAdapter('test-account-id', 1000);
+  adapter.request = jest.fn(() =>
+    new Promise((resolve, reject) => { reject('request error occurred'); }));
+  handler.registerAdapter(adapter);
+
+  const onErrorCallback1 = jest.fn();
+  const onErrorCallback2 = jest.fn();
+
+  handler.addCallback('onError', onErrorCallback1);
+  handler.addCallback('onError', onErrorCallback2);
+
+  handler.active = true;
+  expect(() => { handler.requestAds(1000, strategies.ON_FIRST_RESPONSE); })
+    .not.toThrow('Bid handler is not active');
+
+  // Move to the end of queue
+  setTimeout(() => {
+    expect(onErrorCallback1)
+      .toHaveBeenCalledWith(adapter.type, 'request error occurred');
+    expect(onErrorCallback2)
+      .toHaveBeenCalledWith(adapter.type, 'request error occurred');
+
+    done();
+  }, 0);
+});
+
+test('onError with no callbacks', () => {
+  const handler: BidHandler = new BidHandler();
+
+  const adUnit: AdUnit = new BannerAdUnit('Banner_320x50', 'test-config-id');
+  adUnit.addSize(320, 50);
+  handler.registerAdUnit(adUnit);
+
+  const adapter: Adapter = new PrebidServerAdapter('test-account-id', 1000);
+  adapter.request = jest.fn(() =>
+    new Promise((resolve, reject) => { reject('request error occurred'); }));
+  handler.registerAdapter(adapter);
 
   handler.active = true;
   expect(() => { handler.requestAds(1000, strategies.ON_FIRST_RESPONSE); })
