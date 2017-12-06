@@ -1,4 +1,9 @@
-import { AppRegistry } from 'react-native';
-import App from './App';
+import Prebid from './src/Prebid';
+import * as adapter from './src/adapter';
+import * as adunit from './src/adunit';
 
-AppRegistry.registerComponent('prebid', () => App);
+export default Prebid;
+export {
+  adapter,
+  adunit,
+};
