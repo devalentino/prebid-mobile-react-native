@@ -57,4 +57,4 @@ demo/config.js
 gen/
 package-lock.json
 
-dist/index.js
+lib/
