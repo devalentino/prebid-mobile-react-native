@@ -32,7 +32,7 @@ export default class BidHandler {
     const auction: Auction = new Auction(this.adUnits);
 
     this.adapters.forEach((adapter) => {
-      adapter.request(auction, timeout)
+      adapter.request(this.adUnits, timeout)
         .then((response) => {
           context.response(adapter, strategy, auction, response);
         })

@@ -1,9 +1,12 @@
 import Prebid from './src/Prebid';
-import * as adapter from './src/adapter';
-import * as adunit from './src/adunit';
+import { PrebidServerAdapter } from './src/adapter';
+import { BannerAdUnit, InterstitialAdUnit } from './src/adunit';
+import { strategies } from './src/Settings';
 
 export default Prebid;
 export {
-  adapter,
-  adunit,
+  PrebidServerAdapter,
+  BannerAdUnit,
+  InterstitialAdUnit,
+  strategies,
 };

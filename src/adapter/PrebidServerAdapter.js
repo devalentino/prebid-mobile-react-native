@@ -18,7 +18,8 @@ export default class PrebidServerAdapter extends Adapter {
     this.buildRequestTimeout = buildRequestTimeout;
   }
 
-  request(adUnits: AdUnit[]): Promise {
+  request(adUnits: AdUnit[], timeout: number): Promise {
+    // TODO: cancel promise after timeout argument
     return new Promise((resolve, reject) => {
       let requestTimeout = null;
       const context: PrebidServerAdapter = this;
@@ -31,7 +32,7 @@ export default class PrebidServerAdapter extends Adapter {
           );
 
           req.accountId(context.accountId);
-          adUnits.map(adUnit => req.adUnit(adUnit));
+          adUnits.forEach(adUnit => req.adUnit(adUnit));
 
           fetch('https://prebid.adnxs.com/pbs/v1/auction', {
             method: 'POST',
