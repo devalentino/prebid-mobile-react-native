@@ -2,3 +2,4 @@ node_modules/
 .idea/
 .babelrc
 gen
+package-lock.json
