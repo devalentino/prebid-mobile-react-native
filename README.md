@@ -188,4 +188,4 @@ You can find working demo [here](https://github.com/devalentino/prebid-mobile-re
 
 ## Contributing
 
-You are contribute if you find any bugs. But before sending pull request please make sure you covered bug with unit test and all other test didn't fail 
+You are able contribute if you find any bugs. But before sending pull request please make sure you covered bug with unit test and all other test didn't fail 
