@@ -1,7 +1,7 @@
 {
 	"name": "prebid-mobile-react-native",
 	"main": "lib/index.js",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"private": false,
 	"scripts": {
 		"test": "jest",
