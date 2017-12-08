@@ -104,19 +104,19 @@ There is one constructor argument - object with Prebid settings, ad units, adapt
 Example:
 ```javascript
 this.prebid = new Prebid({
-      settings: {
-        adRequestPeriod: 5 * 60 * 1000,
-        adRequestTimeout: 6 * 1000,
-        strategy: strategies.ON_EVERY_RESPONSE,
-      },
-      adUnits: [interstitial, headerBanner],
-      adapters: [prebidServerAdapter],
-      callbacks: {
-        onAuction: [onAuctionCallback],
-      },
-    });
+  settings: {
+    adRequestPeriod: 5 * 60 * 1000,
+    adRequestTimeout: 6 * 1000,
+    strategy: strategies.ON_EVERY_RESPONSE,
+  },
+  adUnits: [interstitial, headerBanner],
+  adapters: [prebidServerAdapter],
+  callbacks: {
+    onAuction: [onAuctionCallback],
+  },
+});
 
-    this.prebid.start();
+this.prebid.start();
 ```
 
 ##### settings
@@ -167,8 +167,8 @@ Function receives auction argument - object, which contains all the responses, e
 
 ```javascript
 const onAuctionCallback = (auction) => {
-      // your logic here
-    };
+  // your logic here
+};
 ```
 ###### onError
 
@@ -178,8 +178,8 @@ Function receives adapter type and error as arguments.
 
 ```javascript
 const onErrorCallback = (adapterType, error) => {
-      // your logic here
-    };
+  // your logic here
+};
 ```
 
 ## Demo
