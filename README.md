@@ -16,7 +16,7 @@ Library provides set of classes to work with header bidder ad exchanges. Please 
 
 ### AdUnit
 
-To start working with library you should create adUnits. Ad units should be registered in [Prebid](#Prebid). 
+To start working with library you should create adUnits. Ad units should be registered in [Prebid](#prebid). 
 
 ```javascript
 const interstitial = new InterstitialAdUnit('Interstitial', configId, 1080, 1920);
@@ -97,6 +97,10 @@ class MyCustomAdapter extends Adapter {
 
 ### Prebid
 
+Prebid is top level API which manages the process. Prebid class has `start` method to request ads and `stop` to stop requests.
+
+There is one constructor argument - object with Prebid settings, ad units, adapters and callbacks.
+
 Example:
 ```javascript
 this.prebid = new Prebid({
@@ -114,10 +118,6 @@ this.prebid = new Prebid({
 
     this.prebid.start();
 ```
-
-Prebid is top level API which manages the process. Prebid class has start method to request ads and stop to stop requests.
-
-There is one constructor argument - object with Prebid settings, ad units, adapters and callbacks.
 
 ##### settings
 
@@ -149,11 +149,11 @@ If you want to control all the process, you can choose `ON_EVERY_RESPONSE` strat
 
 ##### adUnits
 
-list of AdUnits defined above
+list of AdUnits defined [above](#adunit)
 
 ##### adapters
 
-List of Adapters defined above
+List of Adapters defined [above](#adapter)
 
 ##### callbacks
 
