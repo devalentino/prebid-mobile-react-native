@@ -1,8 +1,19 @@
 {
 	"name": "prebid-mobile-react-native",
 	"main": "lib/index.js",
-	"version": "0.0.3",
+	"version": "0.0.5",
 	"private": false,
+	"keywords": [
+		"advertising",
+		"auction",
+		"header bidding",
+		"prebid",
+		"react native"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/devalentino/prebid-mobile-react-native.git"
+	},
 	"scripts": {
 		"test": "jest",
 		"build": "npm run clear && ./node_modules/babel-cli/bin/babel.js -s inline -d lib -w src",
